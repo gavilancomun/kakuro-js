@@ -25,6 +25,7 @@ class EmptyCell {
 
 class ValueCell {
   constructor(values) {
+    console.log("vc cons " + values);
     this.values = values;
   }
 
@@ -43,7 +44,20 @@ class ValueCell {
     if (undefined === obj.values) {
       return false;
     }
-    return arrEquals(this.values, obj.values);
+    var s1 = new Set(this.values);
+    var s2 = new Set(obj.values);
+    console.log("vc this " + s1.size + " that " + s2.size);
+    if (s1.size == s2.size) {
+      for (var item of s1) {
+        if (!s2.has(item)) {
+          return false;
+        }
+      }
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 }
 
@@ -133,7 +147,8 @@ class AcrossCell {
   }
 }
 
-var v = function () {
+var v = function() {
+  console.log("v args " + arguments + " " + arguments.length);
   if (0 === arguments.length) {
     return new ValueCell([1, 2, 3, 4, 5, 6, 7, 8, 9]);
   }
@@ -289,8 +304,12 @@ var solveStep = function(cells, total) {
   var perms = permuteAll(cells, total)
     .filter(v => isPossible(last(cells), v[finalIndex]))
     .filter(v => allDifferent(v));
+  console.log(".");
   return transpose(perms)
-    .map(coll => v(coll));
+    .map(coll => { 
+      console.log("solve step apply " + coll);
+      return v.apply(null, coll);
+    });
 };
 
 // returns (non-vals, vals)*
@@ -400,7 +419,7 @@ function testPartN() {
 
 function testSolveStep() {
   var result = solveStep([v(1, 2), v()], 5);
-  console.log("solve step " + result);
+  console.log("solve step result " + result);
   assertCellEquals(v(1, 2), result[0]);
   assertCellEquals(v(3, 4), result[1]);
 }
