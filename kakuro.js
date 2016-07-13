@@ -3,9 +3,30 @@
 
 "use strict";
 
+var arrEquals = function(a1, a2) {
+  return JSON.stringify(a1) === JSON.stringify(a2);
+};
+
 class ValueCell {
   constructor(values) {
     this.values = values;
+  }
+
+  toString() {
+    return "ValueCell[" + this.values.join(", ") + "]";
+  }
+
+  equals(obj) {
+    if (this === obj) {
+      return true;
+    }
+    if (obj === null) {
+      return false;
+    }
+    if (undefined === obj.values) {
+      return false;
+    }
+    return arrEquals(this.values, obj.values);
   }
 }
 
@@ -46,6 +67,15 @@ var permute = function(vs, target, soFar) {
 
 var permuteAll = function(vs, target) {
   return permute(vs, target, []);
+};
+
+var isPossible = function(v, n) {
+  for (var item of v.values) {
+    if (n === item) {
+      return true;
+    }
+  }
+  return false;
 };
 
 var transpose = function(m) {
@@ -126,8 +156,27 @@ var partitionN = function(n, coll) {
   return partitionAll(n, n, coll);
 };
 
+var last = function(coll) {
+  return coll[coll.length - 1];
+};
+
+var solveStep = function(cells, total) {
+  var finalIndex = cells.length - 1;
+  var perms = permuteAll(cells, total)
+    .filter(v => isPossible(last(cells), v[finalIndex]))
+    .filter(v => allDifferent(v));
+  return transpose(perms)
+    .map(coll => v(coll));
+};
+
 var assertEquals = function(expected, result) {
   if (expected !== result) {
+    console.log("ERROR: expected " + expected + " got " + result);
+  }
+};
+
+var assertValueEquals = function(expected, result) {
+  if (!expected.equals(result)) {
     console.log("ERROR: expected " + expected + " got " + result);
   }
 };
@@ -199,6 +248,13 @@ function testPartN() {
   assertEquals(3, result.length);
 }
 
+function testSolveStep() {
+  var result = solveStep([v(1, 2), v()], 5);
+  console.log("solve step " + result);
+  assertValueEquals(v(1, 2), result[0]);
+  assertValueEquals(v(3, 4), result[1]);
+}
+
 testPermute();
 testTranspose();
 testTakeWhile();
@@ -208,4 +264,5 @@ testTake();
 testPartBy();
 testPartAll();
 testPartN();
+testSolveStep();
 
