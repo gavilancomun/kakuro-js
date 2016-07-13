@@ -38,7 +38,7 @@ class EmptyCell {
 
 class ValueCell {
   constructor(values) {
-    this.values = values;
+    this.values = Array.of(...new Set(values));
   }
 
   toString() {
@@ -378,6 +378,7 @@ var solveLine = function(line, pairSolver) {
 };
 
 var solveRow = function(row) {
+  console.log("solve row " + row);
   return solveLine(row, v => solvePair(x => x.getAcross(), v));
 };
 
