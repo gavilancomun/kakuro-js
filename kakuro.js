@@ -33,6 +33,7 @@ class ValueCell {
   }
 
   equals(obj) {
+    console.log("vc equals " + this + " " + obj);
     if (this === obj) {
       return true;
     }
@@ -133,7 +134,12 @@ class AcrossCell {
 }
 
 var v = function () {
-  return new ValueCell([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  if (0 === arguments.length) {
+    return new ValueCell([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  }
+  else {
+    return new ValueCell(Array.of.apply([], arguments));
+  }
 };
 
 var e = function () {
@@ -308,6 +314,11 @@ var solvePair = function(f, pair) {
   }
 };
 
+var solveLine = function(line, pairSolver) {
+  return flatten(pairTargetsWithValues(line)
+    .map(pair => pairSolver(pair)));
+};
+
 var assertEquals = function(expected, result) {
   if (expected !== result) {
     console.log("ERROR: expected " + expected + " got " + result);
@@ -427,6 +438,18 @@ function testSolvePair() {
   assertCellEquals(v(1, 2), result[2]);
 }
 
+
+function testSolveLine() {
+  var line = [da(3, 4), v(), v(), d(4), e(), a(5), v(), v()];
+  var result = solveLine(line, v => solvePair(x => x.getAcross(), v));
+  console.log("solve line " + result);
+  assertEquals(8, result.length);
+  assertCellEquals(v(1, 3), result[1]);
+  assertCellEquals(v(1, 3), result[2]);
+  assertCellEquals(v(1, 2, 3, 4), result[6]);
+  assertCellEquals(v(1, 2, 3, 4), result[7]);
+}
+
 testPermute();
 testTranspose();
 testTakeWhile();
@@ -440,4 +463,4 @@ testSolveStep();
 testGatherValues();
 testPairTargets();
 testSolvePair();
-
+testSolveLine();
