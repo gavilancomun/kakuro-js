@@ -7,6 +7,22 @@ var arrEquals = function(a1, a2) {
   return JSON.stringify(a1) === JSON.stringify(a2);
 };
 
+class EmptyCell {
+  toString() {
+    return "EmptyCell";
+  }
+
+  equals(obj) {
+    if (this === obj) {
+      return true;
+    }
+    if (obj === null) {
+      return false;
+    }
+    return true;
+  }
+}
+
 class ValueCell {
   constructor(values) {
     this.values = values;
@@ -30,8 +46,110 @@ class ValueCell {
   }
 }
 
+class DownAcrossCell {
+  constructor(down, across) {
+    this.down = down;
+    this.across = across;
+  }
+
+  getDown() {
+    return this.down;
+  }
+
+  getAcross() {
+    return this.across;
+  }
+
+  toString() {
+    return "DownAcrossCell[" + this.down + ", " + this.across + "]";
+  }
+
+  equals(obj) {
+    if (this === obj) {
+      return true;
+    }
+    if (obj === null) {
+      return false;
+    }
+    if (undefined === obj.down) {
+      return false;
+    }
+    return (this.down === obj.down) && (this.across === obj.across);
+  }
+}
+
+class DownCell {
+  constructor(down) {
+    this.down = down;
+  }
+
+  getDown() {
+    return this.down;
+  }
+
+  toString() {
+    return "DownCell[" + this.down + "]";
+  }
+
+  equals(obj) {
+    if (this === obj) {
+      return true;
+    }
+    if (obj === null) {
+      return false;
+    }
+    if (undefined === obj.down) {
+      return false;
+    }
+    return (this.down === obj.down);
+  }
+}
+
+class AcrossCell {
+  constructor(across) {
+    this.across = across;
+  }
+
+  getAcross() {
+    return this.across;
+  }
+
+  toString() {
+    return "AcrossCell[" + this.across + "]";
+  }
+
+  equals(obj) {
+    if (this === obj) {
+      return true;
+    }
+    if ((obj === undefined) || (obj === null)) {
+      return false;
+    }
+    if (undefined === obj.across) {
+      return false;
+    }
+    return (this.across === obj.across);
+  }
+}
+
 var v = function () {
   return new ValueCell([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+};
+
+var e = function () {
+  return new EmptyCell();
+};
+
+var da = function(down, across) {
+  return new DownAcrossCell(down, across);
+};
+
+var d = function(down) {
+  return new DownCell(down);
+};
+
+var a = function(across) {
+  return new AcrossCell(across);
 };
 
 var flatten = function(arrays) {
@@ -169,13 +287,18 @@ var solveStep = function(cells, total) {
     .map(coll => v(coll));
 };
 
+// returns (non-vals, vals)*
+var gatherValues = function(line) {
+  return partitionBy(v => v instanceof ValueCell, line);
+};
+
 var assertEquals = function(expected, result) {
   if (expected !== result) {
     console.log("ERROR: expected " + expected + " got " + result);
   }
 };
 
-var assertValueEquals = function(expected, result) {
+var assertCellEquals = function(expected, result) {
   if (!expected.equals(result)) {
     console.log("ERROR: expected " + expected + " got " + result);
   }
@@ -251,8 +374,19 @@ function testPartN() {
 function testSolveStep() {
   var result = solveStep([v(1, 2), v()], 5);
   console.log("solve step " + result);
-  assertValueEquals(v(1, 2), result[0]);
-  assertValueEquals(v(3, 4), result[1]);
+  assertCellEquals(v(1, 2), result[0]);
+  assertCellEquals(v(3, 4), result[1]);
+}
+
+function testGatherValues() {
+  var line = [da(3, 4), v(), v(), d(4), e(), a(4), v(), v()];
+  var result = gatherValues(line);
+  console.log("gather " + result);
+  assertEquals(4, result.length);
+  assertCellEquals(da(3, 4), result[0][0]);
+  assertCellEquals(d(4), result[2][0]);
+  assertCellEquals(e(), result[2][1]);
+  assertCellEquals(a(4), result[2][2]);
 }
 
 testPermute();
@@ -265,4 +399,5 @@ testPartBy();
 testPartAll();
 testPartN();
 testSolveStep();
+testGatherValues();
 
