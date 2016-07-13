@@ -7,6 +7,15 @@ var arrEquals = function(a1, a2) {
   return JSON.stringify(a1) === JSON.stringify(a2);
 };
 
+var contains = function(coll, item) {
+  return coll.indexOf(item) > -1;
+};
+
+var pad2 = function(n) {
+  var s = "" + n;
+  return (s.length < 2) ?  " " + s:  s;
+};
+
 class EmptyCell {
   toString() {
     return "EmptyCell";
@@ -21,11 +30,14 @@ class EmptyCell {
     }
     return true;
   }
+
+  draw() {
+    return "   -----  ";
+  }
 }
 
 class ValueCell {
   constructor(values) {
-    console.log("vc cons " + values);
     this.values = values;
   }
 
@@ -34,7 +46,6 @@ class ValueCell {
   }
 
   equals(obj) {
-    console.log("vc equals " + this + " " + obj);
     if (this === obj) {
       return true;
     }
@@ -46,7 +57,6 @@ class ValueCell {
     }
     var s1 = new Set(this.values);
     var s2 = new Set(obj.values);
-    console.log("vc this " + s1.size + " that " + s2.size);
     if (s1.size == s2.size) {
       for (var item of s1) {
         if (!s2.has(item)) {
@@ -57,6 +67,17 @@ class ValueCell {
     }
     else {
       return false;
+    }
+  }
+
+  draw() {
+    if (1 == this.values.length) {
+      return "     " + this.values[0] + "    ";
+    }
+    else {
+      return " " + [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        .map(n => contains(this.values, n) ? "" + n : ".")
+        .join("");
     }
   }
 }
@@ -91,7 +112,10 @@ class DownAcrossCell {
     }
     return (this.down === obj.down) && (this.across === obj.across);
   }
-}
+
+  draw() {
+    return "   " + pad2(this.down) + "\\" + pad2(this.across) + "  ";
+  }}
 
 class DownCell {
   constructor(down) {
@@ -117,6 +141,10 @@ class DownCell {
       return false;
     }
     return (this.down === obj.down);
+  }
+
+  draw() {
+    return "   " +  pad2(this.down) + "\\--  ";
   }
 }
 
@@ -145,10 +173,25 @@ class AcrossCell {
     }
     return (this.across === obj.across);
   }
+
+  draw() {
+    return "   --\\" +  pad2(this.across) + "  ";
+  }
 }
 
+var drawRow = function(row) {
+  return row
+    .map(v => v.draw())
+    .join("") + "\n";
+};
+
+var drawGrid = function(grid) {
+  return grid
+    .map(row => drawRow(row))
+    .join("");
+};
+
 var v = function() {
-  console.log("v args " + arguments + " " + arguments.length);
   if (0 === arguments.length) {
     return new ValueCell([1, 2, 3, 4, 5, 6, 7, 8, 9]);
   }
@@ -304,12 +347,8 @@ var solveStep = function(cells, total) {
   var perms = permuteAll(cells, total)
     .filter(v => isPossible(last(cells), v[finalIndex]))
     .filter(v => allDifferent(v));
-  console.log(".");
   return transpose(perms)
-    .map(coll => { 
-      console.log("solve step apply " + coll);
-      return v.apply(null, coll);
-    });
+    .map(coll => v.apply(null, coll));
 };
 
 // returns (non-vals, vals)*
@@ -323,7 +362,7 @@ var pairTargetsWithValues = function(line) {
 
 var solvePair = function(f, pair) {
   var notValueCells = pair[0];
-  if (0 === pair[1].length) {
+  if ((undefined === pair[1]) || (0 === pair[1].length)) {
     return notValueCells;
   }
   else {
@@ -336,6 +375,46 @@ var solvePair = function(f, pair) {
 var solveLine = function(line, pairSolver) {
   return flatten(pairTargetsWithValues(line)
     .map(pair => pairSolver(pair)));
+};
+
+var solveRow = function(row) {
+  return solveLine(row, v => solvePair(x => x.getAcross(), v));
+};
+
+var solveColumn = function(column) {
+  return solveLine(column, v => solvePair(x => x.getDown(), v));
+};
+
+var solveGrid = function(grid) {
+  var rowsDone = grid.map(r => solveRow(r));
+  var colsDone = transpose(rowsDone)
+    .map(col => solveColumn(col));
+  return transpose(colsDone);
+};
+
+var gridEquals = function(g1, g2) {
+  if (g1.length == g2.length) {
+    for (var i = 0; i < g1.length; ++i) {
+      if (g1[i] === g2[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
+  else {
+    return false;
+  }
+};
+
+var solver = function(grid) {
+  console.log(drawGrid(grid));
+  var g = solveGrid(grid);
+  if (gridEquals(g, grid)) {
+    return g;
+  }
+  else {
+    return solver(g);
+  }
 };
 
 var assertEquals = function(expected, result) {
@@ -469,6 +548,31 @@ function testSolveLine() {
   assertCellEquals(v(1, 2, 3, 4), result[7]);
 }
 
+function testSolveRow() {
+  var result = solveRow([a(3), v(1, 2, 3), v(1)]);
+  console.log("solve row " + result);
+  assertCellEquals(v(2), result[1]);
+  assertCellEquals(v(1), result[2]);
+}
+
+function testSolveCol() {
+  var result = solveColumn([da(3, 12), v(1, 2, 3), v(1)]);
+  console.log("solve col " + result);
+  assertCellEquals(v(2), result[1]);
+  assertCellEquals(v(1), result[2]);
+}
+
+function testSolver() {
+  var grid1 = [
+    [e(), d(4), d(22), e(), d(16), d(3)],
+    [a(3), v(), v(), da(16, 6), v(), v()],
+    [a(18), v(), v(), v(), v(), v()],
+    [e(), da(17, 23), v(), v(), v(), d(14)],
+    [a(9), v(), v(), a(6), v(), v()],
+    [a(15), v(), v(), a(12), v(), v()]];
+  solver(grid1);
+}
+
 testPermute();
 testTranspose();
 testTakeWhile();
@@ -483,3 +587,7 @@ testGatherValues();
 testPairTargets();
 testSolvePair();
 testSolveLine();
+testSolveRow();
+testSolveCol();
+testSolver();
+
