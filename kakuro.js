@@ -378,7 +378,6 @@ var solveLine = function(line, pairSolver) {
 };
 
 var solveRow = function(row) {
-  console.log("solve row " + row);
   return solveLine(row, v => solvePair(x => x.getAcross(), v));
 };
 
@@ -396,8 +395,10 @@ var solveGrid = function(grid) {
 var gridEquals = function(g1, g2) {
   if (g1.length == g2.length) {
     for (var i = 0; i < g1.length; ++i) {
-      if (g1[i] !== g2[i]) {
-        return false;
+      for (var j = 0; j < g1[i].length; ++j) {
+        if (!g1[i][j].equals(g2[i][j])) {
+          return false;
+        }
       }
     }
     return true;
