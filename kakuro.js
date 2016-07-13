@@ -292,6 +292,22 @@ var gatherValues = function(line) {
   return partitionBy(v => v instanceof ValueCell, line);
 };
 
+var pairTargetsWithValues = function(line) {
+  return partitionN(2, gatherValues(line));
+};
+
+var solvePair = function(f, pair) {
+  var notValueCells = pair[0];
+  if (0 === pair[1].length) {
+    return notValueCells;
+  }
+  else {
+    var valueCells = pair[1];
+    var newValueCells = solveStep(valueCells, f(last(notValueCells)));
+    return concatLists(notValueCells, newValueCells);
+  }
+};
+
 var assertEquals = function(expected, result) {
   if (expected !== result) {
     console.log("ERROR: expected " + expected + " got " + result);
@@ -389,6 +405,28 @@ function testGatherValues() {
   assertCellEquals(a(4), result[2][2]);
 }
 
+function testPairTargets() {
+  var line = [da(3, 4), v(), v(), d(4), e(), a(4), v(), v()];
+  var result = pairTargetsWithValues(line);
+  console.log("pair " + result);
+  assertEquals(2, result.length);
+  assertCellEquals(da(3, 4), result[0][0][0]);
+  assertCellEquals(d(4), result[1][0][0]);
+  assertCellEquals(e(), result[1][0][1]);
+  assertCellEquals(a(4), result[1][0][2]);
+}
+
+function testSolvePair() {
+  var line = [da(3, 4), v(), v(), d(4), e(), a(4), v(), v()];
+  var pairs = pairTargetsWithValues(line);
+  var pair = pairs[0];
+  var result = solvePair(cell => cell.getDown(), pair);
+  console.log("solvePair " + result);
+  assertEquals(3, result.length);
+  assertCellEquals(v(1, 2), result[1]);
+  assertCellEquals(v(1, 2), result[2]);
+}
+
 testPermute();
 testTranspose();
 testTakeWhile();
@@ -400,4 +438,6 @@ testPartAll();
 testPartN();
 testSolveStep();
 testGatherValues();
+testPairTargets();
+testSolvePair();
 
