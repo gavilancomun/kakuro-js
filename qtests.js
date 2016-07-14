@@ -5,8 +5,13 @@
 
 "use strict";
 
-var assertCellEquals = function(assert, expected, result) {
-  assert.ok(expected.equals(result));
+QUnit.assert.cellEquals = function(expected, actual) {
+  this.pushResult({
+    result: expected.equals(actual),
+    actual: actual,
+    expected: expected,
+    message: "cell equality failure"
+  });
 };
 
 QUnit.test("DrawRow", function(assert) {
@@ -15,6 +20,9 @@ QUnit.test("DrawRow", function(assert) {
   console.log(result);
   assert.equal("    3\\ 4   123456789 12.......    4\\--     -----     --\\ 5       4         1    \n", result);
 });
+
+//
+QUnit.module("Transform");
 
 QUnit.test("Permute", function(assert) {
   var vs = [v(), v(), v()];
@@ -83,12 +91,18 @@ QUnit.test("PartN", function(assert) {
   assert.equal(3, result.length);
 });
 
+//
+QUnit.module("Solve");
+
 QUnit.test("SolveStep", function(assert) {
   var result = solveStep([v(1, 2), v()], 5);
   console.log("solve step result " + result);
-  assertCellEquals(assert, v(1, 2), result[0]);
-  assertCellEquals(assert, v(3, 4), result[1]);
+  assert.cellEquals(v(1, 2), result[0]);
+  assert.cellEquals(v(3, 4), result[1]);
 });
+
+//
+QUnit.module("Group");
 
 QUnit.test("GatherValues", function(assert) {
   var line = [da(3, 4), v(), v(), d(4), e(), a(4), v(), v()];
@@ -112,6 +126,9 @@ QUnit.test("PairTargets", function(assert) {
   assert.deepEqual(a(4), result[1][0][2]);
 });
 
+//
+QUnit.module("Solve");
+
 QUnit.test("SolvePair", function(assert) {
   var line = [da(3, 4), v(), v(), d(4), e(), a(4), v(), v()];
   var pairs = pairTargetsWithValues(line);
@@ -119,8 +136,8 @@ QUnit.test("SolvePair", function(assert) {
   var result = solvePair(cell => cell.getDown(), pair);
   console.log("solvePair " + result);
   assert.equal(3, result.length);
-  assertCellEquals(assert, v(1, 2), result[1]);
-  assertCellEquals(assert, v(1, 2), result[2]);
+  assert.cellEquals(v(1, 2), result[1]);
+  assert.cellEquals(v(1, 2), result[2]);
 });
 
 
@@ -129,24 +146,24 @@ QUnit.test("SolveLine", function(assert) {
   var result = solveLine(line, v => solvePair(x => x.getAcross(), v));
   console.log("solve line " + result);
   assert.equal(8, result.length);
-  assertCellEquals(assert, v(1, 3), result[1]);
-  assertCellEquals(assert, v(1, 3), result[2]);
-  assertCellEquals(assert, v(1, 2, 3, 4), result[6]);
-  assertCellEquals(assert, v(1, 2, 3, 4), result[7]);
+  assert.cellEquals(v(1, 3), result[1]);
+  assert.cellEquals(v(1, 3), result[2]);
+  assert.cellEquals(v(1, 2, 3, 4), result[6]);
+  assert.cellEquals(v(1, 2, 3, 4), result[7]);
 });
 
 QUnit.test("SolveRow", function(assert) {
   var result = solveRow([a(3), v(1, 2, 3), v(1)]);
   console.log("solve row " + result);
-  assertCellEquals(assert, v(2), result[1]);
-  assertCellEquals(assert, v(1), result[2]);
+  assert.cellEquals(v(2), result[1]);
+  assert.cellEquals(v(1), result[2]);
 });
 
 QUnit.test("SolveCol", function(assert) {
   var result = solveColumn([da(3, 12), v(1, 2, 3), v(1)]);
   console.log("solve col " + result);
-  assertCellEquals(assert, v(2), result[1]);
-  assertCellEquals(assert, v(1), result[2]);
+  assert.cellEquals(v(2), result[1]);
+  assert.cellEquals(v(1), result[2]);
 });
 
 QUnit.test("Solver", function(assert) {
