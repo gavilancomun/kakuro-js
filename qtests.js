@@ -143,7 +143,7 @@ QUnit.test("SolvePair", function(assert) {
 
 QUnit.test("SolveLine", function(assert) {
   var line = [da(3, 4), v(), v(), d(4), e(), a(5), v(), v()];
-  var result = solveLine(line, v => solvePair(x => x.getAcross(), v));
+  var result = solveLine(line, x => x.getAcross());
   console.log("solve line " + result);
   assert.equal(8, result.length);
   assert.cellEquals(v(1, 3), result[1]);

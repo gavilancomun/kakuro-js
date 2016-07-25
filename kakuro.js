@@ -372,17 +372,17 @@ var solvePair = function(f, pair) {
   }
 };
 
-var solveLine = function(line, pairSolver) {
+var solveLine = function(line, f) {
   return flatten(pairTargetsWithValues(line)
-    .map(pair => pairSolver(pair)));
+    .map(pair => solvePair(f, pair)));
 };
 
 var solveRow = function(row) {
-  return solveLine(row, v => solvePair(x => x.getAcross(), v));
+  return solveLine(row, x => x.getAcross());
 };
 
 var solveColumn = function(column) {
-  return solveLine(column, v => solvePair(x => x.getDown(), v));
+  return solveLine(column, x => x.getDown());
 };
 
 var solveGrid = function(grid) {
