@@ -172,7 +172,7 @@ class AcrossCell {
 
 const drawRow = row => row.map(v => v.draw()).join("") + "\n";
 
-const drawGrid = grid => grid.map(row => drawRow(row)).join("");
+const drawGrid = grid => grid.map(drawRow).join("");
 
 
 // need to use function() to get the arguments list provided
@@ -331,9 +331,9 @@ const solveRow = row => solveLine(row, x => x.getAcross());
 const solveColumn = column => solveLine(column, x => x.getDown());
 
 const solveGrid = grid => {
-  const rowsDone = grid.map(r => solveRow(r));
+  const rowsDone = grid.map(solveRow);
   const colsDone = transpose(rowsDone)
-    .map(col => solveColumn(col));
+    .map(solveColumn);
   return transpose(colsDone);
 };
 
