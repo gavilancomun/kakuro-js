@@ -227,10 +227,7 @@ const transpose = m => {
   else {
     let result = [];
     for (let i = 0; i < m[0].length; ++i) {
-      let row = [];
-      for (let col of m) {
-        row.push(col[i]);
-      }
+      let row = m.map(col => col[i]);
       result.push(row);
     }
     return result;
