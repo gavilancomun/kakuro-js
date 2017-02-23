@@ -203,7 +203,7 @@ const allDifferent = arr => arr.length === new Set(arr).size;
 
 const permute = (vs, target, soFar) => {
   if (target >= 1) {
-    if (soFar.length == (vs.length - 1)) {
+    if (soFar.length === (vs.length - 1)) {
       return [conj(soFar, target)];
     }
     else {
