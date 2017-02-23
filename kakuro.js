@@ -236,31 +236,14 @@ const takeWhile = (f, coll) => {
 };
 
 const drop = (n, coll) => {
-  let result = [];
-  let count = 1;
-  for (let item of coll) {
-    if (count > n) {
-      result.push(item);
-    }
-    ++count;
-  }
+  let result = Array.from(coll);
+  result.splice(0, n);
   return result;
 };
 
-let take = (n, coll) => {
-  let result = [];
-  let count = 1;
-  for (let item of coll) {
-    if (count > n) {
-      return result;
-    }
-    result.push(item);
-    ++count;
-  }
-  return result;
-};
+const take = (n, coll) => coll.slice(0, n);
 
-let partitionBy = (f, coll) => {
+const partitionBy = (f, coll) => {
   if (0 === coll.length) {
     return [];
   }
@@ -288,7 +271,7 @@ const last = coll => coll[coll.length - 1];
 const solveStep = (cells, total) => {
   let finalIndex = cells.length - 1;
   let perms = permuteAll(cells, total)
-    .filter(v => isPossible(last(cells), v[finalIndex]))
+    .filter(vals => isPossible(last(cells), vals[finalIndex]))
     .filter(allDifferent);
   return transpose(perms)
     .map(coll => v.apply(null, coll));
