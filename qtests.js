@@ -10,7 +10,7 @@ QUnit.assert.cellEquals = function(expected, actual) {
     result: expected.equals(actual),
     actual: actual,
     expected: expected,
-    message: "cell equality failure"
+    message: "cell equality"
   });
 };
 

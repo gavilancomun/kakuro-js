@@ -308,9 +308,9 @@ const partitionN = (n, coll) => partitionAll(n, n, coll);
 
 const last = coll => coll[coll.length - 1];
 
-var solveStep = function(cells, total) {
-  var finalIndex = cells.length - 1;
-  var perms = permuteAll(cells, total)
+const solveStep = (cells, total) => {
+  let finalIndex = cells.length - 1;
+  let perms = permuteAll(cells, total)
     .filter(v => isPossible(last(cells), v[finalIndex]))
     .filter(v => allDifferent(v));
   return transpose(perms)
@@ -318,42 +318,31 @@ var solveStep = function(cells, total) {
 };
 
 // returns (non-vals, vals)*
-var gatherValues = function(line) {
-  return partitionBy(v => v instanceof ValueCell, line);
-};
+const gatherValues = line => partitionBy(v => v instanceof ValueCell, line);
 
-var pairTargetsWithValues = function(line) {
-  return partitionN(2, gatherValues(line));
-};
+const pairTargetsWithValues = line => partitionN(2, gatherValues(line));
 
-var solvePair = function(f, pair) {
-  var notValueCells = pair[0];
+const solvePair = (f, pair) => {
+  const notValueCells = pair[0];
   if ((undefined === pair[1]) || (0 === pair[1].length)) {
     return notValueCells;
   }
   else {
-    var valueCells = pair[1];
-    var newValueCells = solveStep(valueCells, f(last(notValueCells)));
+    let valueCells = pair[1];
+    let newValueCells = solveStep(valueCells, f(last(notValueCells)));
     return concatLists(notValueCells, newValueCells);
   }
 };
 
-var solveLine = function(line, f) {
-  return flatten(pairTargetsWithValues(line)
-    .map(pair => solvePair(f, pair)));
-};
+const solveLine = (line, f) => flatten(pairTargetsWithValues(line).map(pair => solvePair(f, pair)));
 
-var solveRow = function(row) {
-  return solveLine(row, x => x.getAcross());
-};
+const solveRow = row => solveLine(row, x => x.getAcross());
 
-var solveColumn = function(column) {
-  return solveLine(column, x => x.getDown());
-};
+const solveColumn = column => solveLine(column, x => x.getDown());
 
-var solveGrid = function(grid) {
-  var rowsDone = grid.map(r => solveRow(r));
-  var colsDone = transpose(rowsDone)
+const solveGrid = grid => {
+  const rowsDone = grid.map(r => solveRow(r));
+  const colsDone = transpose(rowsDone)
     .map(col => solveColumn(col));
   return transpose(colsDone);
 };
