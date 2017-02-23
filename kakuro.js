@@ -220,17 +220,14 @@ const permuteAll = (vs, target) => permute(vs, target, []);
 
 const isPossible = (v, n) => v.values.includes(n);
 
+const range = n => Array(n).fill().map((x, i) => i);
+
 const transpose = m => {
   if (0 === m.length) {
     return [];
   }
   else {
-    let result = [];
-    for (let i = 0; i < m[0].length; ++i) {
-      let row = m.map(col => col[i]);
-      result.push(row);
-    }
-    return result;
+    return range(m[0].length).map(i => m.map(col => col[i]));
   }
 };
 
