@@ -198,19 +198,13 @@ const a = across => new AcrossCell(across);
 
 const flatten = arrays => Array.prototype.concat.apply([], arrays);
 
-var conj = function(arr, value) {
-  return arr.concat([value]);
-};
+const conj = (arr, value) => arr.concat([value]);
 
-var concatLists = function(coll1, coll2) {
-  return coll1.concat(coll2);
-};
+const concatLists = (coll1, coll2) => coll1.concat(coll2);
 
-var allDifferent = function(arr) {
-  return arr.length === new Set(arr).size;
-};
+const allDifferent = arr => arr.length === new Set(arr).size;
 
-var permute = function(vs, target, soFar) {
+const permute = (vs, target, soFar) => {
   if (target >= 1) {
     if (soFar.length == (vs.length - 1)) {
       return [conj(soFar, target)];
@@ -225,12 +219,10 @@ var permute = function(vs, target, soFar) {
   }
 };
 
-var permuteAll = function(vs, target) {
-  return permute(vs, target, []);
-};
+const permuteAll = (vs, target) => permute(vs, target, []);
 
-var isPossible = function(v, n) {
-  for (var item of v.values) {
+const isPossible = (v, n) => {
+  for (let item of v.values) {
     if (n === item) {
       return true;
     }
@@ -238,15 +230,15 @@ var isPossible = function(v, n) {
   return false;
 };
 
-var transpose = function(m) {
+const transpose = m => {
   if (0 === m.length) {
     return [];
   }
   else {
-    var result = [];
-    for (var i = 0; i < m[0].length; ++i) {
+    let result = [];
+    for (let i = 0; i < m[0].length; ++i) {
       let row = [];
-      for (var col of m) {
+      for (let col of m) {
         row.push(col[i]);
       }
       result.push(row);
@@ -255,9 +247,9 @@ var transpose = function(m) {
   }
 };
 
-var takeWhile = function(f, coll) {
-  var result = [];
-  for (var item of coll) {
+const takeWhile = (f, coll) => {
+  let result = [];
+  for (let item of coll) {
     if (!f(item)) {
       break;
     }
@@ -266,10 +258,10 @@ var takeWhile = function(f, coll) {
   return result;
 };
 
-var drop = function(n, coll) {
-  var result = [];
-  var count = 1;
-  for (var item of coll) {
+const drop = (n, coll) => {
+  let result = [];
+  let count = 1;
+  for (let item of coll) {
     if (count > n) {
       result.push(item);
     }
@@ -278,10 +270,10 @@ var drop = function(n, coll) {
   return result;
 };
 
-var take = function(n, coll) {
-  var result = [];
-  var count = 1;
-  for (var item of coll) {
+let take = (n, coll) => {
+  let result = [];
+  let count = 1;
+  for (let item of coll) {
     if (count > n) {
       return result;
     }
@@ -291,19 +283,19 @@ var take = function(n, coll) {
   return result;
 };
 
-var partitionBy = function(f, coll) {
+let partitionBy = (f, coll) => {
   if (0 === coll.length) {
     return [];
   }
   else {
-    var head = coll[0];
-    var fx = f(head);
-    var group = takeWhile(y => fx === f(y), coll);
+    let head = coll[0];
+    let fx = f(head);
+    let group = takeWhile(y => fx === f(y), coll);
     return concatLists([group], partitionBy(f, drop(group.length, coll)));
   }
 };
 
-var partitionAll = function(n, step, coll) {
+const partitionAll = (n, step, coll) => {
   if (0 === coll.length) {
     return [];
   }
@@ -312,13 +304,9 @@ var partitionAll = function(n, step, coll) {
   }
 };
 
-var partitionN = function(n, coll) {
-  return partitionAll(n, n, coll);
-};
+const partitionN = (n, coll) => partitionAll(n, n, coll);
 
-var last = function(coll) {
-  return coll[coll.length - 1];
-};
+const last = coll => coll[coll.length - 1];
 
 var solveStep = function(cells, total) {
   var finalIndex = cells.length - 1;
