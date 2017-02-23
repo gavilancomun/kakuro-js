@@ -347,10 +347,10 @@ const solveGrid = grid => {
   return transpose(colsDone);
 };
 
-var gridEquals = function(g1, g2) {
+const gridEquals = (g1, g2) => {
   if (g1.length == g2.length) {
-    for (var i = 0; i < g1.length; ++i) {
-      for (var j = 0; j < g1[i].length; ++j) {
+    for (let i = 0; i < g1.length; ++i) {
+      for (let j = 0; j < g1[i].length; ++j) {
         if (!g1[i][j].equals(g2[i][j])) {
           return false;
         }
@@ -363,9 +363,9 @@ var gridEquals = function(g1, g2) {
   }
 };
 
-var solver = function(grid) {
+const solver = grid => {
   console.log(drawGrid(grid));
-  var g = solveGrid(grid);
+  const g = solveGrid(grid);
   if (gridEquals(g, grid)) {
     return g;
   }
