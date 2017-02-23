@@ -9,7 +9,7 @@ const contains = (coll, item) => coll.indexOf(item) > -1;
 
 const pad2 = n => {
   const s = "" + n;
-  return (s.length < 2) ?  " " + s:  s;
+  return (s.length < 2) ? (" " + s) : s;
 };
 
 class EmptyCell {
@@ -54,12 +54,7 @@ class ValueCell {
     let s1 = new Set(this.values);
     let s2 = new Set(obj.values);
     if (s1.size == s2.size) {
-      for (let item of s1) {
-        if (!s2.has(item)) {
-          return false;
-        }
-      }
-      return true;
+      return this.values.every(item => s2.has(item));
     }
     else {
       return false;
@@ -179,6 +174,8 @@ const drawRow = row => row.map(v => v.draw()).join("") + "\n";
 
 const drawGrid = grid => grid.map(row => drawRow(row)).join("");
 
+
+// need to use function() to get the arguments list provided
 const v = function() {
   if (0 === arguments.length) {
     return new ValueCell([1, 2, 3, 4, 5, 6, 7, 8, 9]);
@@ -221,14 +218,7 @@ const permute = (vs, target, soFar) => {
 
 const permuteAll = (vs, target) => permute(vs, target, []);
 
-const isPossible = (v, n) => {
-  for (let item of v.values) {
-    if (n === item) {
-      return true;
-    }
-  }
-  return false;
-};
+const isPossible = (v, n) => v.values.includes(n);
 
 const transpose = m => {
   if (0 === m.length) {
@@ -288,9 +278,9 @@ let partitionBy = (f, coll) => {
     return [];
   }
   else {
-    let head = coll[0];
-    let fx = f(head);
-    let group = takeWhile(y => fx === f(y), coll);
+    const head = coll[0];
+    const fx = f(head);
+    const group = takeWhile(y => fx === f(y), coll);
     return concatLists([group], partitionBy(f, drop(group.length, coll)));
   }
 };
@@ -312,7 +302,7 @@ const solveStep = (cells, total) => {
   let finalIndex = cells.length - 1;
   let perms = permuteAll(cells, total)
     .filter(v => isPossible(last(cells), v[finalIndex]))
-    .filter(v => allDifferent(v));
+    .filter(allDifferent);
   return transpose(perms)
     .map(coll => v.apply(null, coll));
 };
@@ -328,8 +318,8 @@ const solvePair = (f, pair) => {
     return notValueCells;
   }
   else {
-    let valueCells = pair[1];
-    let newValueCells = solveStep(valueCells, f(last(notValueCells)));
+    const valueCells = pair[1];
+    const newValueCells = solveStep(valueCells, f(last(notValueCells)));
     return concatLists(notValueCells, newValueCells);
   }
 };
