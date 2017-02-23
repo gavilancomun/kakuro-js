@@ -222,14 +222,7 @@ const isPossible = (v, n) => v.values.includes(n);
 
 const range = n => Array(n).fill().map((x, i) => i);
 
-const transpose = m => {
-  if (0 === m.length) {
-    return [];
-  }
-  else {
-    return range(m[0].length).map(i => m.map(col => col[i]));
-  }
-};
+const transpose = m => (0 === m.length) ? [] : range(m[0].length).map(i => m.map(col => col[i]));
 
 const takeWhile = (f, coll) => {
   let result = [];

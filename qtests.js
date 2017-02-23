@@ -40,6 +40,8 @@ QUnit.test("Transpose", function(assert) {
   console.log(tr);
   assert.equal(ints.length, tr[0].length);
   assert.equal(ints[0].length, tr.length);
+  assert.deepEqual([], transpose([]));
+  assert.deepEqual([], transpose([[]]));
 });
 
 QUnit.test("TakeWhile", function(assert) {
