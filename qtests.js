@@ -15,8 +15,8 @@ QUnit.assert.cellEquals = function(expected, actual) {
 };
 
 QUnit.test("DrawRow", function(assert) {
-  var line = [da(3, 4), v(), v(1, 2), d(4), e(), a(5), v(4), v(1)];
-  var result = drawRow(line);
+  const line = [da(3, 4), v(), v(1, 2), d(4), e(), a(5), v(4), v(1)];
+  const result = drawRow(line);
   console.log(result);
   assert.equal("    3\\ 4   123456789 12.......    4\\--     -----     --\\ 5       4         1    \n", result);
 });
@@ -25,17 +25,17 @@ QUnit.test("DrawRow", function(assert) {
 QUnit.module("Transform");
 
 QUnit.test("Permute", function(assert) {
-  var vs = [v(), v(), v()];
-  var results = permuteAll(vs, 6);
+  const vs = [v(), v(), v()];
+  const results = permuteAll(vs, 6);
   console.log(results);
   assert.equal(10, results.length);
-  var diff = results.filter(p => allDifferent(p));
+  const diff = results.filter(p => allDifferent(p));
   assert.equal(6, diff.length);
 });
 
 QUnit.test("Transpose", function(assert) {
-  var ints = [[1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4]];
-  var tr = transpose(ints);
+  const ints = [[1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4]];
+  const tr = transpose(ints);
   console.log(ints);
   console.log(tr);
   assert.equal(ints.length, tr[0].length);
@@ -43,50 +43,50 @@ QUnit.test("Transpose", function(assert) {
 });
 
 QUnit.test("TakeWhile", function(assert) {
-  var result = takeWhile(n => n < 4, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  const result = takeWhile(n => n < 4, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
   console.log(result);
   assert.equal(4, result.length);
 });
 
 QUnit.test("Concat", function(assert) {
-  var a = [1, 2, 3];
-  var b = [4, 5, 6, 1, 2, 3];
-  var result = concatLists(a, b);
+  const a = [1, 2, 3];
+  const b = [4, 5, 6, 1, 2, 3];
+  const result = concatLists(a, b);
   console.log(result);
   assert.equal(9, result.length);
 });
 
 QUnit.test("Drop", function(assert) {
-  var a = [1, 2, 3, 4, 5, 6];
-  var result = drop(4, a);
+  const a = [1, 2, 3, 4, 5, 6];
+  const result = drop(4, a);
   console.log(result);
   assert.equal(2, result.length);
 });
 
 QUnit.test("Take", function(assert) {
-  var a = [1, 2, 3, 4, 5, 6];
-  var result = take(4, a);
+  const a = [1, 2, 3, 4, 5, 6];
+  const result = take(4, a);
   console.log(result);
   assert.equal(4, result.length);
 });
 
 QUnit.test("PartBy", function(assert) {
-  var data = [1, 2, 2, 2, 3, 4, 5, 5, 6, 7, 7, 8, 9];
-  var result = partitionBy(n => 0 === (n % 2), data);
+  const data = [1, 2, 2, 2, 3, 4, 5, 5, 6, 7, 7, 8, 9];
+  const result = partitionBy(n => 0 === (n % 2), data);
   console.log(result);
   assert.equal(9, result.length);
 });
 
 QUnit.test("PartAll", function(assert) {
-  var data = [1, 2, 2, 2, 3, 4, 5, 5, 6, 7, 7, 8, 9];
-  var result = partitionAll(5, 3, data);
+  const data = [1, 2, 2, 2, 3, 4, 5, 5, 6, 7, 7, 8, 9];
+  const result = partitionAll(5, 3, data);
   console.log(result);
   assert.equal(5, result.length);
 });
 
 QUnit.test("PartN", function(assert) {
-  var data = [1, 2, 2, 2, 3, 4, 5, 5, 6, 7, 7, 8, 9];
-  var result = partitionN(5, data);
+  const data = [1, 2, 2, 2, 3, 4, 5, 5, 6, 7, 7, 8, 9];
+  const result = partitionN(5, data);
   console.log(result);
   assert.equal(3, result.length);
 });
@@ -95,7 +95,7 @@ QUnit.test("PartN", function(assert) {
 QUnit.module("Solve");
 
 QUnit.test("SolveStep", function(assert) {
-  var result = solveStep([v(1, 2), v()], 5);
+  const result = solveStep([v(1, 2), v()], 5);
   console.log("solve step result " + result);
   assert.cellEquals(v(1, 2), result[0]);
   assert.cellEquals(v(3, 4), result[1]);
@@ -105,8 +105,8 @@ QUnit.test("SolveStep", function(assert) {
 QUnit.module("Group");
 
 QUnit.test("GatherValues", function(assert) {
-  var line = [da(3, 4), v(), v(), d(4), e(), a(4), v(), v()];
-  var result = gatherValues(line);
+  const line = [da(3, 4), v(), v(), d(4), e(), a(4), v(), v()];
+  const result = gatherValues(line);
   console.log("gather " + result);
   assert.equal(4, result.length);
   assert.deepEqual(da(3, 4), result[0][0]);
@@ -116,8 +116,8 @@ QUnit.test("GatherValues", function(assert) {
 });
 
 QUnit.test("PairTargets", function(assert) {
-  var line = [da(3, 4), v(), v(), d(4), e(), a(4), v(), v()];
-  var result = pairTargetsWithValues(line);
+  const line = [da(3, 4), v(), v(), d(4), e(), a(4), v(), v()];
+  const result = pairTargetsWithValues(line);
   console.log("pair " + result);
   assert.equal(2, result.length);
   assert.deepEqual(da(3, 4), result[0][0][0]);
@@ -130,10 +130,10 @@ QUnit.test("PairTargets", function(assert) {
 QUnit.module("Solve");
 
 QUnit.test("SolvePair", function(assert) {
-  var line = [da(3, 4), v(), v(), d(4), e(), a(4), v(), v()];
-  var pairs = pairTargetsWithValues(line);
-  var pair = pairs[0];
-  var result = solvePair(cell => cell.getDown(), pair);
+  const line = [da(3, 4), v(), v(), d(4), e(), a(4), v(), v()];
+  const pairs = pairTargetsWithValues(line);
+  const pair = pairs[0];
+  const result = solvePair(cell => cell.getDown(), pair);
   console.log("solvePair " + result);
   assert.equal(3, result.length);
   assert.cellEquals(v(1, 2), result[1]);
@@ -142,8 +142,8 @@ QUnit.test("SolvePair", function(assert) {
 
 
 QUnit.test("SolveLine", function(assert) {
-  var line = [da(3, 4), v(), v(), d(4), e(), a(5), v(), v()];
-  var result = solveLine(line, x => x.getAcross());
+  const line = [da(3, 4), v(), v(), d(4), e(), a(5), v(), v()];
+  const result = solveLine(line, x => x.getAcross());
   console.log("solve line " + result);
   assert.equal(8, result.length);
   assert.cellEquals(v(1, 3), result[1]);
@@ -153,28 +153,28 @@ QUnit.test("SolveLine", function(assert) {
 });
 
 QUnit.test("SolveRow", function(assert) {
-  var result = solveRow([a(3), v(1, 2, 3), v(1)]);
+  const result = solveRow([a(3), v(1, 2, 3), v(1)]);
   console.log("solve row " + result);
   assert.cellEquals(v(2), result[1]);
   assert.cellEquals(v(1), result[2]);
 });
 
 QUnit.test("SolveCol", function(assert) {
-  var result = solveColumn([da(3, 12), v(1, 2, 3), v(1)]);
+  const result = solveColumn([da(3, 12), v(1, 2, 3), v(1)]);
   console.log("solve col " + result);
   assert.cellEquals(v(2), result[1]);
   assert.cellEquals(v(1), result[2]);
 });
 
 QUnit.test("Solver", function(assert) {
-  var grid1 = [
+  const grid1 = [
     [e(), d(4), d(22), e(), d(16), d(3)],
     [a(3), v(), v(), da(16, 6), v(), v()],
     [a(18), v(), v(), v(), v(), v()],
     [e(), da(17, 23), v(), v(), v(), d(14)],
     [a(9), v(), v(), a(6), v(), v()],
     [a(15), v(), v(), a(12), v(), v()]];
-  var result = solver(grid1);
+  const result = solver(grid1);
   assert.equal("   --\\ 3       1         2       16\\ 6       4         2    \n", drawRow(result[1]));
   assert.equal("   --\\18       3         5         7         2         1    \n", drawRow(result[2]));
   assert.equal("   -----     17\\23       8         9         6       14\\--  \n", drawRow(result[3]));

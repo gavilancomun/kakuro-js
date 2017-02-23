@@ -3,16 +3,12 @@
 
 "use strict";
 
-var arrEquals = function(a1, a2) {
-  return JSON.stringify(a1) === JSON.stringify(a2);
-};
+const arrEquals = (a1, a2) => JSON.stringify(a1) === JSON.stringify(a2);
 
-var contains = function(coll, item) {
-  return coll.indexOf(item) > -1;
-};
+const contains = (coll, item) => coll.indexOf(item) > -1;
 
-var pad2 = function(n) {
-  var s = "" + n;
+const pad2 = n => {
+  const s = "" + n;
   return (s.length < 2) ?  " " + s:  s;
 };
 
@@ -55,10 +51,10 @@ class ValueCell {
     if (undefined === obj.values) {
       return false;
     }
-    var s1 = new Set(this.values);
-    var s2 = new Set(obj.values);
+    let s1 = new Set(this.values);
+    let s2 = new Set(obj.values);
     if (s1.size == s2.size) {
-      for (var item of s1) {
+      for (let item of s1) {
         if (!s2.has(item)) {
           return false;
         }
@@ -179,19 +175,11 @@ class AcrossCell {
   }
 }
 
-var drawRow = function(row) {
-  return row
-    .map(v => v.draw())
-    .join("") + "\n";
-};
+const drawRow = row => row.map(v => v.draw()).join("") + "\n";
 
-var drawGrid = function(grid) {
-  return grid
-    .map(row => drawRow(row))
-    .join("");
-};
+const drawGrid = grid => grid.map(row => drawRow(row)).join("");
 
-var v = function() {
+const v = function() {
   if (0 === arguments.length) {
     return new ValueCell([1, 2, 3, 4, 5, 6, 7, 8, 9]);
   }
@@ -200,25 +188,15 @@ var v = function() {
   }
 };
 
-var e = function () {
-  return new EmptyCell();
-};
+const e = () => new EmptyCell();
 
-var da = function(down, across) {
-  return new DownAcrossCell(down, across);
-};
+const da = (down, across) => new DownAcrossCell(down, across);
 
-var d = function(down) {
-  return new DownCell(down);
-};
+const d = down => new DownCell(down);
 
-var a = function(across) {
-  return new AcrossCell(across);
-};
+const a = across => new AcrossCell(across);
 
-var flatten = function(arrays) {
-  return Array.prototype.concat.apply([], arrays);
-};
+const flatten = arrays => Array.prototype.concat.apply([], arrays);
 
 var conj = function(arr, value) {
   return arr.concat([value]);
